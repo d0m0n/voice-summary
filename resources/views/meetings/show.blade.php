@@ -277,6 +277,18 @@
                 this.loading = true;
                 try {
                     const response = await fetch(`/meetings/${this.meetingId}/summaries`);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
+                    }
+
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        const text = await response.text();
+                        console.error('非JSONレスポンス:', text);
+                        throw new Error('サーバーから不正なレスポンスが返されました');
+                    }
+
                     const data = await response.json();
                     
                     if (data.success) {
