@@ -66,11 +66,8 @@ class ClaudeApiService
 
     private function buildSummaryPrompt(string $text): string
     {
-        return "以下の音声認識テキストを簡潔に要約してください。主要なポイントと決定事項を含めて、3-5文で要約してください。
+        return "以下のテキストの内容を簡潔にまとめてください。重要なポイントや決定事項があれば含めてください。前置きや説明は不要です。内容のみを直接記述してください。
 
-音声認識テキスト：
-{$text}
-
-要約：";
+{$text}";
     }
 }
