@@ -3,6 +3,7 @@
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SummaryController;
+use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
 // 認証が必要ないページ
@@ -22,11 +23,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // 会議の管理者限定操作（具体的なルートを先に定義）
     Route::middleware('admin')->group(function () {
+        // 会議管理
         Route::get('/meetings/create', [MeetingController::class, 'create'])->name('meetings.create');
         Route::post('/meetings', [MeetingController::class, 'store'])->name('meetings.store');
         Route::get('/meetings/{meeting}/edit', [MeetingController::class, 'edit'])->name('meetings.edit');
         Route::put('/meetings/{meeting}', [MeetingController::class, 'update'])->name('meetings.update');
         Route::delete('/meetings/{meeting}', [MeetingController::class, 'destroy'])->name('meetings.destroy');
+
+        // ユーザー管理
+        Route::prefix('admin')->name('admin.')->group(function () {
+            Route::resource('users', UserManagementController::class)->except(['show']);
+        });
     });
 
     // 会議詳細（全ユーザーアクセス可能、パラメータルートは最後に）

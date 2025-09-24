@@ -12,12 +12,7 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
-        @if(app()->environment('local'))
-            <link rel="stylesheet" href="{{ asset('build/assets/app-C-rTLKgK.css') }}">
-            <script type="module" src="{{ asset('build/assets/app-Ayx85ewC.js') }}"></script>
-        @else
-            @vite(['resources/css/app.css', 'resources/js/app.js'])
-        @endif
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
