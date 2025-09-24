@@ -1,4 +1,5 @@
 import './bootstrap';
+import './voice-recognition';
 
 import Alpine from 'alpinejs';
 
