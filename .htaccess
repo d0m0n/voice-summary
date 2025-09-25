@@ -1,12 +1,14 @@
 # さくらレンタルサーバー用設定
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    
+
     # HTTPSを強制
     RewriteCond %{HTTPS} off
     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
-    
-    # public フォルダーにリダイレクト
+
+    # public フォルダーにリダイレクト（Laravelルーティング対応）
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} !^/public/
-    RewriteRule ^(.*)$ /public/$1 [L]
+    RewriteRule ^(.*)$ /public/index.php [QSA,L]
 </IfModule>
