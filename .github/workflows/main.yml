@@ -30,4 +30,4 @@ jobs:
         USER: ${{ secrets.USER }}
         APP_DIR: ${{ secrets.APP_DIR }}
       run: |
-        ssh -v -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} "cd ${APP_DIR} && git pull origin main && php composer.phar install --no-dev && php artisan migrate --force"
+        ssh -v -o StrictHostKeyChecking=no -i private_key ${USER}@${HOST} "cd ${APP_DIR} && git reset --hard origin/main && git pull origin main && php composer.phar install --no-dev && php artisan migrate --force"
