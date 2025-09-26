@@ -56,6 +56,7 @@
                                         title="最後の管理者の権限は変更できません"
                                     @endif>
                                 <option value="admin" {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>管理者</option>
+                                <option value="moderator" {{ old('role', $user->role) === 'moderator' ? 'selected' : '' }}>利用者</option>
                                 <option value="viewer" {{ old('role', $user->role) === 'viewer' ? 'selected' : '' }}>閲覧者</option>
                             </select>
                             @if($user->id === auth()->id() && $user->isAdmin() && \App\Models\User::where('role', 'admin')->count() <= 1)

@@ -34,7 +34,7 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- 音声認識コントロール -->
-            @if(auth()->user()->isAdmin())
+            @if(auth()->user()->canUseVoiceRecognition())
             <div class="bg-white rounded-lg shadow-sm border mb-6 p-6" x-data="voiceRecognitionApp({{ $meeting->id }}, '{{ $meeting->language }}')">
                 <h3 class="text-lg font-semibold mb-4">音声認識コントロール</h3>
                 

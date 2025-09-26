@@ -52,6 +52,7 @@
                                     required>
                                 <option value="">権限を選択してください</option>
                                 <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>管理者</option>
+                                <option value="moderator" {{ old('role') === 'moderator' ? 'selected' : '' }}>利用者</option>
                                 <option value="viewer" {{ old('role') === 'viewer' ? 'selected' : '' }}>閲覧者</option>
                             </select>
                             @error('role')

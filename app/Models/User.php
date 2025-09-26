@@ -57,8 +57,23 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    public function isModerator()
+    {
+        return $this->role === 'moderator';
+    }
+
     public function isViewer()
     {
         return $this->role === 'viewer';
+    }
+
+    public function canManageMeetings()
+    {
+        return in_array($this->role, ['admin']);
+    }
+
+    public function canUseVoiceRecognition()
+    {
+        return in_array($this->role, ['admin', 'moderator']);
     }
 }

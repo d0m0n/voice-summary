@@ -49,11 +49,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 会議詳細（全ユーザーアクセス可能、パラメータルートは最後に）
     Route::get('/meetings/{meeting}', [MeetingController::class, 'show'])->name('meetings.show');
 
-    // 要約関連のAPI（管理者のみ要約生成、全員要約閲覧可能）
+    // 要約関連のAPI（全員要約閲覧可能、利用者以上が要約生成可能）
     Route::get('/meetings/{meeting}/summaries', [SummaryController::class, 'getSummaries'])->name('summaries.index');
-    
-    Route::middleware('admin')->group(function () {
+
+    // 利用者以上（管理者・利用者）が要約生成可能
+    Route::middleware('moderator')->group(function () {
         Route::post('/meetings/{meeting}/summaries', [SummaryController::class, 'generateSummary'])->name('summaries.store');
+    });
+
+    // 管理者のみが要約削除可能
+    Route::middleware('admin')->group(function () {
         Route::delete('/summaries/{summary}', [SummaryController::class, 'deleteSummary'])->name('summaries.destroy');
     });
 

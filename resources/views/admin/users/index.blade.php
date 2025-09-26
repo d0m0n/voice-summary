@@ -68,8 +68,12 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                                @if($user->role === 'admin') bg-red-100 text-red-800 @else bg-blue-100 text-blue-800 @endif">
-                                                {{ $user->role === 'admin' ? '管理者' : '閲覧者' }}
+                                                @if($user->role === 'admin') bg-red-100 text-red-800
+                                                @elseif($user->role === 'moderator') bg-yellow-100 text-yellow-800
+                                                @else bg-blue-100 text-blue-800 @endif">
+                                                @if($user->role === 'admin') 管理者
+                                                @elseif($user->role === 'moderator') 利用者
+                                                @else 閲覧者 @endif
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
