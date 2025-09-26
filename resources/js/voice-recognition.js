@@ -126,7 +126,8 @@ class VoiceRecognitionManager {
         if (!this.accumulatedText.trim() || !this.meetingId) return;
 
         try {
-            const response = await fetch(`/meetings/${this.meetingId}/summaries`, {
+            const baseUrl = document.querySelector('meta[name="base-url"]')?.getAttribute('content') || '';
+            const response = await fetch(`${baseUrl}/meetings/${this.meetingId}/summaries`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -171,7 +172,8 @@ class VoiceRecognitionManager {
         }
 
         try {
-            const response = await fetch(`/meetings/${this.meetingId}/summaries`, {
+            const baseUrl = document.querySelector('meta[name="base-url"]')?.getAttribute('content') || '';
+            const response = await fetch(`${baseUrl}/meetings/${this.meetingId}/summaries`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -276,7 +276,8 @@
             async loadSummaries() {
                 this.loading = true;
                 try {
-                    const response = await fetch(`/meetings/${this.meetingId}/summaries`);
+                    const baseUrl = document.querySelector('meta[name="base-url"]')?.getAttribute('content') || '';
+                    const response = await fetch(`${baseUrl}/meetings/${this.meetingId}/summaries`);
                     
                     if (!response.ok) {
                         throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
@@ -305,7 +306,8 @@
                 if (!confirm('この要約を削除してもよろしいですか？')) return;
 
                 try {
-                    const response = await fetch(`/summaries/${summaryId}`, {
+                    const baseUrl = document.querySelector('meta[name="base-url"]')?.getAttribute('content') || '';
+                    const response = await fetch(`${baseUrl}/summaries/${summaryId}`, {
                         method: 'DELETE',
                         headers: {
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
