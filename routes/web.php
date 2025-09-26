@@ -11,6 +11,16 @@ Route::get('/', function () {
     return redirect('/meetings');
 });
 
+// さくらサーバー用デバッグルート
+Route::get('/debug-route', function () {
+    return response()->json([
+        'message' => 'Laravel routing is working',
+        'request_uri' => request()->getRequestUri(),
+        'path_info' => request()->getPathInfo(),
+        'query_string' => request()->getQueryString(),
+    ]);
+});
+
 // 認証が必要なページ
 Route::middleware(['auth', 'verified'])->group(function () {
     // ダッシュボード（会議一覧にリダイレクト）
