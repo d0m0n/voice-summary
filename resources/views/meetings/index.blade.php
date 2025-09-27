@@ -49,6 +49,7 @@
                                         <p>作成日: {{ $meeting->created_at->format('Y/m/d H:i') }}</p>
                                         <p>言語: {{ $meeting->language }}</p>
                                         <p>要約数: {{ $meeting->summaries_count ?? $meeting->summaries->count() }}件</p>
+                                        <p>録音数: {{ $meeting->recordings_count }}件</p>
                                     </div>
 
                                     <div class="flex space-x-2">

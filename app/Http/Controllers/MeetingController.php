@@ -6,6 +6,8 @@ use App\Models\Meeting;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class MeetingController extends Controller
 {
@@ -15,6 +17,7 @@ class MeetingController extends Controller
     public function index(): View
     {
         $meetings = Meeting::with('creator', 'summaries')
+            ->withCount('recordings')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -96,5 +99,70 @@ class MeetingController extends Controller
 
         return redirect()->route('meetings.index')
             ->with('success', '会議が削除されました。');
+    }
+
+    /**
+     * Export summaries as CSV
+     */
+    public function exportCsv(Meeting $meeting): StreamedResponse
+    {
+        $summaries = $meeting->summaries()->with('user')->orderBy('created_at', 'desc')->get();
+
+        $filename = "要約履歴_{$meeting->name}_" . now()->format('Y-m-d_H-i-s') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ];
+
+        $callback = function() use ($summaries) {
+            $file = fopen('php://output', 'w');
+
+            // BOM for Excel UTF-8 support
+            fwrite($file, "\xEF\xBB\xBF");
+
+            // CSV header
+            fputcsv($file, ['入力日', '入力者名', '要約テキスト', '元のテキスト']);
+
+            foreach ($summaries as $summary) {
+                fputcsv($file, [
+                    "'" . $summary->created_at->format('Y/m/d H:i:s'),
+                    "'" . ($summary->user ? $summary->user->name : '不明'),
+                    "'" . $summary->summary,
+                    "'" . $summary->original_text
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Export summaries as TXT
+     */
+    public function exportTxt(Meeting $meeting): Response
+    {
+        $summaries = $meeting->summaries()->with('user')->orderBy('created_at', 'desc')->get();
+
+        $filename = "要約履歴_{$meeting->name}_" . now()->format('Y-m-d_H-i-s') . '.txt';
+
+        $content = "会議名: {$meeting->name}\n";
+        $content .= "エクスポート日時: " . now()->format('Y/m/d H:i:s') . "\n";
+        $content .= str_repeat("=", 50) . "\n\n";
+
+        foreach ($summaries as $summary) {
+            $content .= "■ 入力日: " . $summary->created_at->format('Y/m/d H:i:s') . "\n";
+            $content .= "■ 入力者: " . ($summary->user ? $summary->user->name : '不明') . "\n";
+            $content .= "■ 要約テキスト:\n" . $summary->summary . "\n\n";
+            $content .= "■ 元のテキスト:\n" . $summary->original_text . "\n";
+            $content .= str_repeat("-", 50) . "\n\n";
+        }
+
+        return response($content, 200, [
+            'Content-Type' => 'text/plain; charset=UTF-8',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ]);
     }
 }

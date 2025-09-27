@@ -195,10 +195,22 @@
                 <div class="p-6 border-b">
                     <div class="flex justify-between items-center">
                         <h3 class="text-lg font-semibold">要約履歴</h3>
-                        <button @click="loadSummaries()" 
-                                class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-2 rounded">
-                            🔄 更新
-                        </button>
+                        <div class="flex space-x-2">
+                            @if(auth()->user()->canUseVoiceRecognition())
+                            <a href="{{ route('meetings.export.csv', $meeting) }}"
+                               class="bg-green-500 hover:bg-green-600 text-white text-sm px-3 py-2 rounded">
+                                📊 CSV
+                            </a>
+                            <a href="{{ route('meetings.export.txt', $meeting) }}"
+                               class="bg-purple-500 hover:bg-purple-600 text-white text-sm px-3 py-2 rounded">
+                                📄 TXT
+                            </a>
+                            @endif
+                            <button @click="loadSummaries()"
+                                    class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-2 rounded">
+                                🔄 更新
+                            </button>
+                        </div>
                     </div>
                 </div>
                 

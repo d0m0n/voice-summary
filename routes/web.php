@@ -59,6 +59,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 会議詳細（全ユーザーアクセス可能、パラメータルートは最後に）
     Route::get('/meetings/{meeting}', [MeetingController::class, 'show'])->name('meetings.show');
 
+    // 要約履歴のダウンロード（全ユーザーアクセス可能）
+    Route::get('/meetings/{meeting}/export/csv', [MeetingController::class, 'exportCsv'])->name('meetings.export.csv');
+    Route::get('/meetings/{meeting}/export/txt', [MeetingController::class, 'exportTxt'])->name('meetings.export.txt');
+
     // 要約関連のAPI（全員要約閲覧可能、利用者以上が要約生成可能）
     Route::get('/meetings/{meeting}/summaries', [SummaryController::class, 'getSummaries'])->name('summaries.index');
 
