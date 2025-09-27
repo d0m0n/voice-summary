@@ -65,6 +65,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 録音関連のAPI（全員録音閲覧可能）
     Route::get('/meetings/{meeting}/recordings', [RecordingController::class, 'index'])->name('recordings.index');
     Route::get('/recordings/{recording}/stream', [RecordingController::class, 'stream'])->name('recordings.stream');
+    Route::get('/recordings/{recording}/download', [RecordingController::class, 'download'])->name('recordings.download');
     Route::get('/storage/stats', [RecordingController::class, 'storageStats'])->name('storage.stats');
 
     // 利用者以上（管理者・利用者）が要約・録音生成可能

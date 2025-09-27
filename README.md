@@ -74,7 +74,22 @@
 
 
 ## 保存先
-storage/app/private/recordings
+録音ファイルの正しい保存場所：
+  - ローカル開発環境： storage/app/private/recordings/
+  - さくらサーバー：
+  /home/[ユーザー名]/[ドメイン名]/storage/app/private/recordings/
+
+  FTPでファイルが見つからない理由：
+  - storage/app/recordings/ ではなく storage/app/private/recordings/
+  を確認する必要がある
+  - 現在の設定では local ディスクのルートが storage/app/private になっている
+
+  デプロイ時の対応：
+  1. FTPで storage/app/private/recordings/ フォルダを作成
+  2. 権限を755に設定
+  3. 既存のファイルがある場合は、このディレクトリにアップロード
+
+  この設定により、セキュリティも確保され、現在の実装をそのまま使用できます。
 
 
 

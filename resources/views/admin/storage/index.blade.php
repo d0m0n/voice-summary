@@ -155,11 +155,17 @@
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900" x-text="recording.file_size_formatted"></td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" x-text="formatDate(recording.recorded_at)"></td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                <button @click="deleteRecording(recording.id)"
-                                                        class="text-red-600 hover:text-red-900 mr-3">
-                                                    削除
-                                                </button>
-                                                <audio controls preload="none" class="w-32">
+                                                <div class="flex items-center space-x-2">
+                                                    <a :href="`${baseUrl}/recordings/${recording.id}/download`"
+                                                       class="text-blue-600 hover:text-blue-900">
+                                                        📥 ダウンロード
+                                                    </a>
+                                                    <button @click="deleteRecording(recording.id)"
+                                                            class="text-red-600 hover:text-red-900">
+                                                        🗑️ 削除
+                                                    </button>
+                                                </div>
+                                                <audio controls preload="none" class="w-32 mt-2">
                                                     <source :src="recording.stream_url" :type="recording.mime_type">
                                                 </audio>
                                             </td>
@@ -272,6 +278,7 @@
             recordings: { data: [] },
             loading: true,
             selectedRecordings: [],
+            baseUrl: document.querySelector('meta[name="base-url"]')?.getAttribute('content') || '',
 
             init() {
                 this.loadRecordings();

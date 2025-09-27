@@ -118,7 +118,7 @@
 
             <!-- 録音コントロール（管理者のみ） -->
             @if(auth()->user()->isAdmin())
-            <div class="bg-white rounded-lg shadow-sm border mb-6 p-6" x-data="audioRecordingApp({{ $meeting->id }})">`
+            <div class="bg-white rounded-lg shadow-sm border mb-6 p-6" x-data="audioRecordingApp({{ $meeting->id }})">
                 <h3 class="text-lg font-semibold mb-4">録音コントロール</h3>
 
                 <!-- 録音ボタンとステータス -->
@@ -284,6 +284,10 @@
                                         <span class="text-xs text-gray-400" x-text="recording.user ? `by ${recording.user.name}` : ''"></span>
                                     </div>
                                     <div class="flex space-x-2">
+                                        <a :href="`${baseUrl}/recordings/${recording.id}/download`"
+                                           class="text-blue-500 hover:text-blue-700 text-sm">
+                                            📥 ダウンロード
+                                        </a>
                                         @if(auth()->user()->isAdmin() || auth()->user()->canUseVoiceRecognition())
                                         <button @click="deleteRecording(recording.id)"
                                                 x-show="canDelete(recording)"
@@ -745,6 +749,7 @@
             meetingId: meetingId,
             recordings: [],
             loading: true,
+            baseUrl: document.querySelector('meta[name="base-url"]')?.getAttribute('content') || '',
 
             init() {
                 this.loadRecordings();

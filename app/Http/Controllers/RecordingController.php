@@ -169,6 +169,38 @@ class RecordingController extends Controller
         }
     }
 
+    public function download(Recording $recording)
+    {
+        try {
+            // Check if file exists
+            if (!Storage::disk('local')->exists($recording->file_path)) {
+                abort(404, '録音ファイルが見つかりません。');
+            }
+
+            $filePath = Storage::disk('local')->path($recording->file_path);
+
+            // Generate download filename
+            $downloadName = sprintf(
+                '%s_%s_%s.%s',
+                $recording->meeting->name ?? 'recording',
+                $recording->user->name ?? 'unknown',
+                $recording->created_at->format('Y-m-d_H-i-s'),
+                pathinfo($recording->file_name, PATHINFO_EXTENSION)
+            );
+
+            // Clean filename for download
+            $downloadName = preg_replace('/[^a-zA-Z0-9._-]/', '_', $downloadName);
+
+            return response()->download($filePath, $downloadName, [
+                'Content-Type' => $recording->mime_type,
+                'Content-Disposition' => 'attachment; filename="' . $downloadName . '"'
+            ]);
+
+        } catch (\Exception $e) {
+            abort(500, '録音ファイルのダウンロードに失敗しました: ' . $e->getMessage());
+        }
+    }
+
     public function storageStats(): JsonResponse
     {
         return response()->json([
