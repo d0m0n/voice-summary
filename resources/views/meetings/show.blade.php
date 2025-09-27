@@ -212,7 +212,7 @@
                                     class="text-sm px-3 py-2 rounded transition-colors"
                                     :class="autoRefreshEnabled ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-gray-500 hover:bg-gray-600 text-white'">
                                 <span x-show="!autoRefreshEnabled">🔄 自動更新</span>
-                                <span x-show="autoRefreshEnabled">⏸️ 自動停止</span>
+                                <span x-show="autoRefreshEnabled">⏸️ 更新停止</span>
                             </button>
                             @else
                             <!-- 手動更新ボタン（閲覧者以外） -->
