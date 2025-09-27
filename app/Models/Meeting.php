@@ -34,6 +34,11 @@ class Meeting extends Model
         return $this->hasMany(Summary::class);
     }
 
+    public function recordings(): HasMany
+    {
+        return $this->hasMany(Recording::class);
+    }
+
     public function latestSummaries()
     {
         return $this->summaries()->orderBy('created_at', 'desc');

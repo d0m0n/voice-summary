@@ -19,6 +19,9 @@
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                             ユーザー管理
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.storage.index')" :active="request()->routeIs('admin.storage.*')">
+                            ストレージ管理
+                        </x-nav-link>
                     @endif
                 </div>
             </div>
@@ -78,6 +81,9 @@
             @if(auth()->user()->isAdmin())
                 <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                     ユーザー管理
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.storage.index')" :active="request()->routeIs('admin.storage.*')">
+                    ストレージ管理
                 </x-responsive-nav-link>
             @endif
         </div>

@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\StorageController;
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RecordingController;
 use App\Http\Controllers\SummaryController;
 use App\Http\Controllers\UserManagementController;
 use Illuminate\Support\Facades\Route;
@@ -40,9 +42,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('/meetings/{meeting}', [MeetingController::class, 'update'])->name('meetings.update');
         Route::delete('/meetings/{meeting}', [MeetingController::class, 'destroy'])->name('meetings.destroy');
 
-        // ユーザー管理
+        // ユーザー管理・ストレージ管理
         Route::prefix('admin')->name('admin.')->group(function () {
             Route::resource('users', UserManagementController::class)->except(['show']);
+
+            // ストレージ管理
+            Route::get('storage', [StorageController::class, 'index'])->name('storage.index');
+            Route::get('storage/stats', [StorageController::class, 'stats'])->name('storage.stats');
+            Route::get('storage/recordings', [StorageController::class, 'recordings'])->name('storage.recordings');
+            Route::delete('storage/recordings/{recording}', [StorageController::class, 'deleteRecording'])->name('storage.recordings.destroy');
+            Route::post('storage/cleanup', [StorageController::class, 'cleanup'])->name('storage.cleanup');
+            Route::post('storage/recordings/delete-selected', [StorageController::class, 'deleteSelectedRecordings'])->name('storage.recordings.delete-selected');
         });
     });
 
@@ -52,15 +62,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 要約関連のAPI（全員要約閲覧可能、利用者以上が要約生成可能）
     Route::get('/meetings/{meeting}/summaries', [SummaryController::class, 'getSummaries'])->name('summaries.index');
 
-    // 利用者以上（管理者・利用者）が要約生成可能
+    // 録音関連のAPI（全員録音閲覧可能）
+    Route::get('/meetings/{meeting}/recordings', [RecordingController::class, 'index'])->name('recordings.index');
+    Route::get('/recordings/{recording}/stream', [RecordingController::class, 'stream'])->name('recordings.stream');
+    Route::get('/storage/stats', [RecordingController::class, 'storageStats'])->name('storage.stats');
+
+    // 利用者以上（管理者・利用者）が要約・録音生成可能
     Route::middleware('moderator')->group(function () {
         Route::post('/meetings/{meeting}/summaries', [SummaryController::class, 'generateSummary'])->name('summaries.store');
+        Route::post('/meetings/{meeting}/recordings', [RecordingController::class, 'store'])->name('recordings.store');
+        Route::post('/recordings/check-capacity', [RecordingController::class, 'checkCapacity'])->name('recordings.checkCapacity');
     });
 
-    // 管理者のみが要約削除可能
+    // 管理者のみが要約・録音削除可能、ただし録音は自分のもののみ削除可
     Route::middleware('admin')->group(function () {
         Route::delete('/summaries/{summary}', [SummaryController::class, 'deleteSummary'])->name('summaries.destroy');
     });
+
+    // 録音削除（管理者は全て、一般ユーザーは自分のもののみ）
+    Route::delete('/recordings/{recording}', [RecordingController::class, 'destroy'])->name('recordings.destroy');
 
     // プロフィール管理
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -69,6 +69,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Recording Storage Configuration
+    |--------------------------------------------------------------------------
+    |
+    | These values configure the recording storage limits and behavior.
+    | All sizes are in MB, time is in seconds, threshold is in percentage.
+    |
+    */
+
+    'max_storage_size' => env('MAX_STORAGE_SIZE', 1024),
+    'max_recording_size' => env('MAX_RECORDING_SIZE', 100),
+    'max_recording_time' => env('MAX_RECORDING_TIME', 3600),
+    'storage_warning_threshold' => env('STORAGE_WARNING_THRESHOLD', 80),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Locale Configuration
     |--------------------------------------------------------------------------
     |
