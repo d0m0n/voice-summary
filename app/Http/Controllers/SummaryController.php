@@ -26,6 +26,7 @@ class SummaryController extends Controller
 
             $summary = Summary::create([
                 'meeting_id' => $meeting->id,
+                'user_id' => auth()->id(),
                 'original_text' => $request->text,
                 'summary' => $summaryText,
                 'type' => $request->type,
@@ -51,6 +52,7 @@ class SummaryController extends Controller
     public function getSummaries(Meeting $meeting): JsonResponse
     {
         $summaries = $meeting->latestSummaries()
+            ->with('user')
             ->limit(50)
             ->get();
 

@@ -156,7 +156,7 @@
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <h4 class="text-sm font-medium text-gray-700 mb-2">要約:</h4>
+                                    <h4 class="text-sm font-medium text-gray-700 mb-2" x-text="summary.user ? `${summary.user.name}による要約:` : '要約:'"></h4>
                                     <p class="text-gray-900 leading-relaxed" x-text="summary.summary"></p>
                                 </div>
                                 
