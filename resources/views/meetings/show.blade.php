@@ -206,10 +206,21 @@
                                 📄 TXT
                             </a>
                             @endif
+                            @if(auth()->user()->isViewer())
+                            <!-- 自動更新トグルボタン（閲覧者のみ） -->
+                            <button @click="toggleAutoRefresh()"
+                                    class="text-sm px-3 py-2 rounded transition-colors"
+                                    :class="autoRefreshEnabled ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-gray-500 hover:bg-gray-600 text-white'">
+                                <span x-show="!autoRefreshEnabled">🔄 自動更新</span>
+                                <span x-show="autoRefreshEnabled">⏸️ 自動停止</span>
+                            </button>
+                            @else
+                            <!-- 手動更新ボタン（閲覧者以外） -->
                             <button @click="loadSummaries()"
                                     class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-2 rounded">
                                 🔄 更新
                             </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -418,10 +429,13 @@
             meetingId: meetingId,
             summaries: [],
             loading: true,
+            autoRefreshEnabled: false,
+            autoRefreshInterval: null,
+            refreshIntervalSeconds: 30, // 30秒間隔でサーバー負荷を軽減
 
             init() {
                 this.loadSummaries();
-                
+
                 // 要約生成イベントをリッスン
                 this.$watch('$store', () => {
                     // 新しい要約が生成されたら再読み込み
@@ -431,6 +445,11 @@
                 // カスタムイベントをリッスン
                 window.addEventListener('summary-generated', () => {
                     setTimeout(() => this.loadSummaries(), 1000);
+                });
+
+                // ページを離れる時に自動更新を停止
+                window.addEventListener('beforeunload', () => {
+                    this.stopAutoRefresh();
                 });
             },
 
@@ -482,6 +501,34 @@
                 } catch (error) {
                     console.error('要約の削除に失敗:', error);
                 }
+            },
+
+            toggleAutoRefresh() {
+                if (this.autoRefreshEnabled) {
+                    this.stopAutoRefresh();
+                } else {
+                    this.startAutoRefresh();
+                }
+            },
+
+            startAutoRefresh() {
+                this.autoRefreshEnabled = true;
+                this.autoRefreshInterval = setInterval(() => {
+                    // ローディング中でなければ更新を実行
+                    if (!this.loading) {
+                        this.loadSummaries();
+                    }
+                }, this.refreshIntervalSeconds * 1000);
+                console.log(`自動更新を開始しました（${this.refreshIntervalSeconds}秒間隔）`);
+            },
+
+            stopAutoRefresh() {
+                this.autoRefreshEnabled = false;
+                if (this.autoRefreshInterval) {
+                    clearInterval(this.autoRefreshInterval);
+                    this.autoRefreshInterval = null;
+                }
+                console.log('自動更新を停止しました');
             },
 
             formatDate(dateString) {
